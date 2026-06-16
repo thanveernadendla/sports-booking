@@ -1,0 +1,125 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "demo@sportzone.com",
+      "password": "password123",
+      "name": "Demo Admin"
+    },
+    {
+      "id": 2,
+      "email": "thanveerbashan2122.sse@saveetha.com",
+      "password": "Munna@7673",
+      "name": "MUNNA"
+    },
+    {
+      "id": 3,
+      "email": "jashwanthsai57@gmail.com",
+      "password": "123jashu123",
+      "name": "jashwanth"
+    },
+    {
+      "id": 4,
+      "email": "test@gmail.com",
+      "password": "Test@123",
+      "name": "Test"
+    },
+    {
+      "id": 5,
+      "email": "testuser+6a1108e8-fec8-4597-9a70-54464f2e942d@sportzone.com",
+      "password": "Test123!",
+      "name": "Test User"
+    },
+    {
+      "id": 6,
+      "email": "nunna@gmail.com",
+      "password": "123Munna",
+      "name": "munnaa"
+    },
+    {
+      "id": 7,
+      "email": "santenna@gmailcom",
+      "password": "917738@12",
+      "name": "santenna"
+    },
+    {
+      "id": 8,
+      "email": "jasmine@gmail.com",
+      "password": "123jas@",
+      "name": "jasmine"
+    }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "time": "10:00",
+      "venue": "Arena 7 Football",
+      "team": "Team Eagles",
+      "price": 120,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 2,
+      "time": "12:00",
+      "venue": "Skyline Basketball",
+      "team": "Marcus J.",
+      "price": 100,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 3,
+      "time": "14:00",
+      "venue": "Center Court Tennis",
+      "team": "Anna K.",
+      "price": 90,
+      "status": "Pending",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 4,
+      "time": "16:00",
+      "venue": "SmashHouse Badminton",
+      "team": "Dev R.",
+      "price": 80,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 5,
+      "time": "18:00",
+      "venue": "Pulse Cricket Ground",
+      "team": "Royals XI",
+      "price": 150,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 6,
+      "time": "20:00",
+      "venue": "Test Arena",
+      "team": "QA Team",
+      "price": 130,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 7,
+      "userId": 1,
+      "time": "08:00",
+      "venue": "Pulse Cricket Ground",
+      "team": "chennaisuperkings",
+      "price": 150,
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    }
+  ],
+  "utilization": {
+    "Football Turf": 92,
+    "Basketball": 78,
+    "Tennis": 65,
+    "Badminton": 85,
+    "Cricket": 57
+  }
+}

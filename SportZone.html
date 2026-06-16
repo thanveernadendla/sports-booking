@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SportZone — Booking & Tournament Management</title>
+<meta name="description" content="SportZone streamlines sports booking, turf management, and tournament brackets into a single real-time system."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #191d26;
+    --bg2: #1e2330;
+    --card: #222839;
+    --border: #2e3548;
+    --primary: #a8e063;
+    --primary-dark: #7dbf3c;
+    --primary-glow: 0 0 30px rgba(168,224,99,0.3);
+    --accent: #f97316;
+    --destructive: #ef4444;
+    --success: #22c55e;
+    --muted: #64748b;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --font-display: 'Oswald', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --radius: 12px;
+    --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .page { display: none; min-height: 100vh; flex-direction: column; }
+  .page.active { display: flex; }
+
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(25,29,38,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--primary-glow);
+    transition: var(--transition);
+  }
+  .logo-icon:hover { transform: scale(1.1); }
+  .logo-icon svg { width: 20px; height: 20px; color: #1a2e05; }
+  
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo-text span { color: var(--primary); }
+
+  nav { display: flex; align-items: center; gap: 4px; }
+  
+  .nav-link {
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    background: none;
+    border: none;
+    font-family: var(--font-sans);
+  }
+  .nav-link:hover { color: var(--text); background: var(--card); }
+  .nav-link.active { color: var(--primary); background: rgba(168,224,99,0.1); font-weight: 600; }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  
+  #user-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-family: var(--font-sans);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #1a2e05;
+    box-shadow: var(--primary-glow);
+  }
+  .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+
+  .btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--bg2); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--primary); }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.15);
+    color: var(--destructive);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+
+  /* MAIN LAYOUT */
+  main { flex: 1; }
+
+  /* HERO SECTION */
+  .hero {
+    padding: 80px 24px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; }
+    nav { display: none; }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(168,224,99,0.1);
+    border: 1px solid rgba(168,224,99,0.3);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .hero-title span { color: var(--primary); }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 480px;
+  }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* SIMULATOR CARD */
+  .simulator-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .sim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sim-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  .live-badge {
+    background: rgba(34,197,94,0.15);
+    color: var(--success);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .sim-slot {
+    padding: 14px;
+    border-radius: 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .sim-slot:hover { border-color: var(--primary); background: rgba(168,224,99,0.05); }
+  .sim-slot:last-child { margin-bottom: 0; }
+
+  .sim-slot-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sim-slot-time { color: var(--primary); font-family: var(--font-display); font-size: 15px; }
+  .sim-slot-sub { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+  .available { color: var(--success); font-weight: 600; }
+  .booked { color: var(--destructive); font-weight: 600; }
+
+  /* STATS SECTION */
+  .stats-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 700px) { .stats-section { grid-template-columns: 1fr; } }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    text-align: center;
+    transition: var(--transition);
+  }
+  .stat-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .stat-desc { font-size: 13px; color: var(--text-muted); }
+
+  /* SECTION CONTAINERS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* COMPARE PAGE */
+  .compare-hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px 40px;
+  }
+
+  .compare-section-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .compare-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .strike { text-decoration: line-through; color: var(--text-muted); }
+
+  .compare-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 650px;
+    line-height: 1.7;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 40px 0;
+  }
+
+  @media (max-width: 600px) { .metrics-grid { grid-template-columns: 1fr; } }
+
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: var(--transition);
+  }
+  .metric-card.highlight { border-color: var(--primary); box-shadow: var(--primary-glow); }
+
+  .metric-icon { margin-bottom: 12px; }
+  .metric-icon svg { width: 28px; height: 28px; }
+  .metric-num {
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .metric-label { font-size: 13px; color: var(--text-muted); }
+
+  /* COMPARISON TABLE */
+  .compare-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .compare-table-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 16px 24px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table-head div {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .compare-table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 14px 24px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    transition: var(--transition);
+    font-size: 14px;
+  }
+  .compare-table-row:last-child { border-bottom: none; }
+  .compare-table-row:hover { background: rgba(255,255,255,0.02); }
+  .compare-table-row:nth-child(even) { background: rgba(255,255,255,0.01); }
+
+  .row-feature { font-weight: 600; }
+  .row-bad { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .row-good { font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .x-icon { color: var(--destructive); flex-shrink: 0; }
+  .check-icon { color: var(--primary); flex-shrink: 0; }
+
+  .bottom-line {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 60px;
+  }
+  .bottom-line h2 { font-family: var(--font-display); font-size: 28px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+  .bottom-line p { color: var(--text-muted); line-height: 1.7; max-width: 700px; }
+  .highlight-text { color: var(--primary); font-weight: 700; }
+
+  /* DASHBOARD PAGE */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .dashboard-label { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--primary); }
+  .dashboard-title { font-family: var(--font-display); font-size: clamp(36px, 5vw, 60px); font-weight: 700; text-transform: uppercase; line-height: 1; }
+  .dashboard-date { font-size: 13px; color: var(--text-muted); font-family: monospace; }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 900px) { .metrics-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .metrics-row { grid-template-columns: 1fr; } }
+
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: var(--transition);
+  }
+  .kpi-card:hover { border-color: rgba(168,224,99,0.4); }
+
+  .kpi-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .kpi-icon {
+    width: 40px; height: 40px;
+    background: rgba(168,224,99,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+  }
+  .kpi-icon svg { width: 20px; height: 20px; }
+  .kpi-delta { font-size: 11px; font-weight: 700; color: var(--success); }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+  .kpi-value { font-family: var(--font-display); font-size: 30px; font-weight: 700; }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 800px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .panel-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .booking-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .booking-row:last-child { border-bottom: none; }
+
+  .booking-left { display: flex; align-items: center; gap: 16px; }
+  .booking-time { font-family: var(--font-display); font-weight: 700; color: var(--primary); font-size: 18px; width: 60px; }
+  .booking-venue { font-weight: 600; font-size: 14px; }
+  .booking-team { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .status-confirmed { background: rgba(34,197,94,0.15); color: var(--success); }
+  .status-pending { background: rgba(249,115,22,0.15); color: var(--accent); }
+
+  .util-item { margin-bottom: 16px; }
+  .util-item:last-child { margin-bottom: 0; }
+  .util-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  .util-label { color: var(--text-muted); }
+  .util-pct { font-weight: 700; }
+  .util-bar { height: 6px; background: var(--bg2); border-radius: 100px; overflow: hidden; }
+  .util-fill { height: 100%; background: linear-gradient(90deg, var(--primary-dark), var(--primary)); border-radius: 100px; transition: width 0.6s ease; }
+
+  /* AUTH PAGE */
+  .auth-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(168,224,99,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .auth-box {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-center { text-align: center; margin-bottom: 28px; }
+
+  .auth-form-card {
+    background: rgba(34,40,57,0.9);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-sans);
+  }
+  .google-btn:hover { background: var(--card); border-color: rgba(168,224,99,0.3); }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; font-family: var(--font-display); }
+
+  .error-box {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--destructive);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .field-inner { position: relative; }
+  .field-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+  .field-icon svg { width: 16px; height: 16px; display: block; }
+
+  .field input, .field select {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--font-sans);
+    transition: var(--transition);
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .field select { padding-left: 12px; }
+  .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(168,224,99,0.1); }
+  .field input::placeholder { color: var(--muted); }
+
+  .toggle-link { color: var(--primary); font-weight: 600; background: none; border: none; cursor: pointer; font-family: var(--font-sans); font-size: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .back-home { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 16px; }
+  .back-home button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; font-family: var(--font-sans); }
+  .back-home button:hover { color: var(--text); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    transition: var(--transition);
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-close svg { width: 20px; height: 20px; }
+
+  .modal-title { font-family: var(--font-display); font-size: 24px; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 24px; }
+  
+  .modal .field input, .modal .field select {
+    padding-left: 12px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .footer-brand { font-family: var(--font-display); letter-spacing: 0.1em; font-size: 12px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 2000;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.error { border-color: var(--destructive); color: var(--destructive); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Section titles in pages */
+  .section-tag { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(28px,4vw,48px); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .section-sub { color: var(--text-muted); max-width: 500px; margin-bottom: 32px; }
+
+  .form-footer { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px; }
+
+  /* Spinner animation for buttons */
+  .loading { opacity: 0.7; pointer-events: none; }
+  .loading::after { content: ' ⏳'; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: Add Booking -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-title">Book a Slot</div>
+    <form id="booking-form" onsubmit="submitBooking(event)">
+      <div class="field">
+        <label>Venue</label>
+        <select id="b-venue">
+          <option value="Arena 7 Football">Arena 7 Football</option>
+          <option value="Skyline Basketball">Skyline Basketball</option>
+          <option value="Center Court Tennis">Center Court Tennis</option>
+          <option value="SmashHouse Badminton">SmashHouse Badminton</option>
+          <option value="Pulse Cricket Ground">Pulse Cricket Ground</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Time Slot</label>
+        <select id="b-time">
+          <option value="08:00">08:00 – 09:00</option>
+          <option value="10:00">10:00 – 11:00</option>
+          <option value="12:00">12:00 – 13:00</option>
+          <option value="14:00">14:00 – 15:00</option>
+          <option value="16:00">16:00 – 17:00</option>
+          <option value="18:00">18:00 – 19:00</option>
+          <option value="20:00">20:00 – 21:00</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Team / Booked By</label>
+        <div class="field-inner">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <input type="text" id="b-team" placeholder="e.g. Royals XI or John D." required/>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Book Now</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== PAGE: HOME ===================== -->
+<div id="page-home" class="page active">
+  <header>
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+      <span class="logo-text">SPORT<span>ZONE</span></span>
+    </div>
+    <nav>
+      <button class="nav-link active" onclick="navigate('home')">Home</button>
+      <button class="nav-link" onclick="navigate('compare')">Why SportZone</button>
+      <button class="nav-link" onclick="navigate('dashboard')">Dashboard</button>
+    </nav>
+    <div class="header-right">
+      <span id="user-badge-home"></span>
+      <button class="btn btn-primary" id="auth-btn-home" onclick="navigate('auth')">Sign in</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <div class="hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          Next-Gen Sports Management
+        </div>
+        <h1 class="hero-title">Play.<br/>Book.<br/><span>Compete.</span></h1>
+        <p class="hero-desc">Real-time slot synchronization, automated tournament brackets, and integrated payments. Replace manual chaos with one connected system.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="navigate('dashboard')">Go to Dashboard</button>
+          <button class="btn btn-ghost" onclick="navigate('compare')">See Why It Wins</button>
+        </div>
+      </div>
+      <div>
+        <div class="simulator-card">
+          <div class="sim-header">
+            <div class="sim-title">Live Slots</div>
+            <div class="live-badge">REAL-TIME</div>
+          </div>
+          <div class="sim-slot">
+            <div class="sim-slot-top"><span>Arena 7 Football</span><span class="sim-slot-time">19:00</span></div>
+            <div class="sim-slot-sub"><span>Turf A • 5-a-side</span><span class="available">● Available</span></div>
+          </div>
+          <div class="sim-slot">
+            <div class="sim-slot-top"><span>Pulse Cricket Ground</span><span class="sim-slot-time">20:00</span></div>
+            <div class="sim-slot-sub"><span>Full Ground • 11-a-side</span><span class="available">● Available</span></div>
+          </div>
+          <div class="sim-slot" style="opacity:0.6;cursor:default">
+            <div class="sim-slot-top"><span>Skyline Basketball</span><span class="sim-slot-time">18:00</span></div>
+            <div class="sim-slot-sub"><span>Court 1 • 5v5</span><span class="booked">● Booked</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-num">70%</div>
+        <div class="stat-label">Less Logistics</div>
+        <div class="stat-desc">Zero phone calls, automated confirmations, unified control.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0%</div>
+        <div class="stat-label">Double Bookings</div>
+        <div class="stat-desc">Instantly synchronized slot allocation. Never booked twice.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">1 Click</div>
+        <div class="stat-label">Tournament Bracket</div>
+        <div class="stat-desc">Auto-generated brackets from team registrations with live scoring.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 SportZone — Booking & Tournament Management</span>
+    <span class="footer-brand">PLAY · BOOK · COMPETE</span>
+  </footer>
+</div>
+
+<!-- ===================== PAGE: COMPARE ===================== -->
+<div id="page-compare" class="page">
+  <header>
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+      <span class="logo-text">SPORT<span>ZONE</span></span>
+    </div>
+    <nav>
+      <button class="nav-link" onclick="navigate('home')">Home</button>
+      <button class="nav-link active" onclick="navigate('compare')">Why SportZone</button>
+      <button class="nav-link" onclick="navigate('dashboard')">Dashboard</button>
+    </nav>
+    <div class="header-right">
+      <span id="user-badge-compare"></span>
+      <button class="btn btn-primary" id="auth-btn-compare" onclick="navigate('auth')">Sign in</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="compare-hero">
+      <div class="compare-section-label">The Efficiency Case</div>
+      <h1 class="compare-title">SportZone vs<br/>The <span class="strike">Old Way</span></h1>
+      <p class="compare-desc">Manual sports management means phone calls, paper bracket sheets, double-bookings, and lost player data. SportZone replaces all of it with one connected system.</p>
+    </div>
+
+    <div class="section" style="padding-top:0">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="metric-num">45 min</div>
+          <div class="metric-label">Avg manual booking time</div>
+        </div>
+        <div class="metric-card highlight">
+          <div class="metric-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a8e063" stroke-width="2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+          <div class="metric-num">&lt;1 min</div>
+          <div class="metric-label">Booking on SportZone</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="metric-num">98%</div>
+          <div class="metric-label">Reduction in double bookings</div>
+        </div>
+      </div>
+
+      <div class="compare-table">
+        <div class="compare-table-head">
+          <div>Feature</div>
+          <div style="color:#ef4444">Manual Method</div>
+          <div style="color:#a8e063">SportZone</div>
+        </div>
+        <div id="compare-rows"></div>
+      </div>
+
+      <div class="bottom-line">
+        <h2>The Bottom Line</h2>
+        <p>By digitizing slot management, payments, brackets and communication, SportZone reduces operational overhead by an estimated <span class="highlight-text">70%</span> while increasing venue utilization and tournament participation. Less time on logistics. More time on sport.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 SportZone — Booking & Tournament Management</span>
+    <span class="footer-brand">PLAY · BOOK · COMPETE</span>
+  </footer>
+</div>
+
+<!-- ===================== PAGE: DASHBOARD ===================== -->
+<div id="page-dashboard" class="page">
+  <header>
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+      <span class="logo-text">SPORT<span>ZONE</span></span>
+    </div>
+    <nav>
+      <button class="nav-link" onclick="navigate('home')">Home</button>
+      <button class="nav-link" onclick="navigate('compare')">Why SportZone</button>
+      <button class="nav-link active" onclick="navigate('dashboard')">Dashboard</button>
+    </nav>
+    <div class="header-right">
+      <span id="user-badge-dashboard"></span>
+      <button class="btn btn-primary" id="auth-btn-dashboard" onclick="navigate('auth')">Sign in</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="section">
+      <div class="dashboard-header">
+        <div>
+          <div class="dashboard-label">Control Center</div>
+          <div class="dashboard-title">Dashboard</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn btn-primary" id="add-booking-btn" onclick="openModal()" style="display:none">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add Booking
+          </button>
+          <span class="dashboard-date" id="today-label">Today · 6/15/2026</span>
+        </div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
+            <span class="kpi-delta">+12%</span>
+          </div>
+          <div class="kpi-label">Bookings Today</div>
+          <div class="kpi-value" id="kpi-bookings">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978M18 9h1.5a1 1 0 0 0 0-5H18M4 22h16M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zM6 9H4.5a1 1 0 0 1 0-5H6"/></svg></div>
+            <span class="kpi-delta">+2</span>
+          </div>
+          <div class="kpi-label">Active Tournaments</div>
+          <div class="kpi-value" id="kpi-tournaments">6</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <span class="kpi-delta">+8%</span>
+          </div>
+          <div class="kpi-label">Active Players</div>
+          <div class="kpi-value" id="kpi-players">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <span class="kpi-delta">+18%</span>
+          </div>
+          <div class="kpi-label">Revenue (mo)</div>
+          <div class="kpi-value" id="kpi-revenue">—</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Today's Bookings</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8e063" stroke-width="2"><path d="M16 7h6v6M22 7l-8.5 8.5-5-5L2 17"/></svg>
+          </div>
+          <div id="bookings-list"><p style="color:var(--text-muted);font-size:13px;padding:12px 0">Loading…</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title" style="margin-bottom:20px">Utilization</div>
+          <div id="util-bars"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 SportZone — Booking & Tournament Management</span>
+    <span class="footer-brand">PLAY · BOOK · COMPETE</span>
+  </footer>
+</div>
+
+<!-- ===================== PAGE: AUTH ===================== -->
+<div id="page-auth" class="page">
+  <header>
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+      <span class="logo-text">SPORT<span>ZONE</span></span>
+    </div>
+    <nav>
+      <button class="nav-link" onclick="navigate('home')">Home</button>
+      <button class="nav-link" onclick="navigate('compare')">Why SportZone</button>
+      <button class="nav-link" onclick="navigate('dashboard')">Dashboard</button>
+    </nav>
+    <div class="header-right">
+      <button class="btn btn-primary active">Sign in</button>
+    </div>
+  </header>
+
+  <div class="auth-main">
+    <div class="auth-bg"></div>
+    <div class="auth-box">
+      <div class="auth-center">
+        <div class="hero-badge" style="margin-bottom:16px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          Welcome Back
+        </div>
+        <h1 class="section-title" id="auth-title" style="margin-bottom:6px">Sign In</h1>
+        <p class="auth-subtitle" style="color:var(--text-muted);font-size:14px" id="auth-subtitle">Access your bookings, brackets and team stats.</p>
+      </div>
+
+      <div class="auth-form-card">
+        <button class="google-btn" onclick="googleSignIn()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.2 5.2C40.9 36.7 44 30.9 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <div class="divider-text">OR</div>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="error-box" id="auth-error"></div>
+
+        <form id="auth-form" onsubmit="handleAuth(event)">
+          <div class="field" id="name-field" style="display:none">
+            <label>Full Name</label>
+            <div class="field-inner">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <input type="text" id="auth-name" placeholder="John Doe"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <div class="field-inner">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span>
+              <input type="email" id="auth-email" placeholder="you@team.com" required/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <div class="field-inner">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input type="password" id="auth-password" placeholder="••••••••" required/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="auth-submit-btn" style="width:100%;padding:13px">
+            Sign In <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+
+        <p class="form-footer" id="auth-toggle">
+          New to SportZone? <button class="toggle-link" onclick="toggleAuthMode()">Create an account</button>
+        </p>
+      </div>
+      <div class="back-home">
+        <button onclick="navigate('home')">← Back to home</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 SportZone — Booking & Tournament Management</span>
+    <span class="footer-brand">PLAY · BOOK · COMPETE</span>
+  </footer>
+</div>
+
+<script>
+// =====================================================================
+// INBUILT BACKEND — Full data engine using localStorage
+// =====================================================================
+const DB = {
+  KEY: 'sz_db_v2',
+
+  seed() {
+    return {
+      users: [{ id: 1, email: 'demo@sportzone.com', password: 'password123', name: 'Demo Admin' }],
+      bookings: [
+        { id: 1, time: '10:00', venue: 'Arena 7 Football', team: 'Team Eagles', status: 'Confirmed', date: '2026-06-15' },
+        { id: 2, time: '12:00', venue: 'Skyline Basketball', team: 'Marcus J.', status: 'Confirmed', date: '2026-06-15' },
+        { id: 3, time: '14:00', venue: 'Center Court Tennis', team: 'Anna K.', status: 'Pending', date: '2026-06-15' },
+        { id: 4, time: '16:00', venue: 'SmashHouse Badminton', team: 'Dev R.', status: 'Confirmed', date: '2026-06-15' },
+        { id: 5, time: '18:00', venue: 'Pulse Cricket Ground', team: 'Royals XI', status: 'Confirmed', date: '2026-06-15' }
+      ],
+      utilization: { 'Football Turf': 92, 'Basketball': 78, 'Tennis': 65, 'Badminton': 85, 'Cricket': 54 }
+    };
+  },
+
+  read() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      return raw ? JSON.parse(raw) : this.seed();
+    } catch { return this.seed(); }
+  },
+
+  write(data) {
+    localStorage.setItem(this.KEY, JSON.stringify(data));
+  },
+
+  init() {
+    if (!localStorage.getItem(this.KEY)) this.write(this.seed());
+  }
+};
+
+// =====================================================================
+// AUTH ENGINE
+// =====================================================================
+const Auth = {
+  SESSION_KEY: 'sz_session',
+
+  register(email, password, name) {
+    if (!email || !password || !name) throw new Error('All fields required');
+    const db = DB.read();
+    if (db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+      throw new Error('User already exists with this email');
+    }
+    const maxId = db.users.reduce((m, u) => Math.max(m, u.id), 0);
+    const user = { id: maxId + 1, email: email.toLowerCase(), password, name };
+    db.users.push(user);
+    DB.write(db);
+    return user;
+  },
+
+  login(email, password) {
+    const db = DB.read();
+    const user = db.users.find(u =>
+      u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    );
+    if (!user) throw new Error('Invalid email or password');
+    return user;
+  },
+
+  saveSession(user) {
+    localStorage.setItem(this.SESSION_KEY, JSON.stringify({ ...user, exp: Date.now() + 86400000 }));
+  },
+
+  getSession() {
+    try {
+      const s = JSON.parse(localStorage.getItem(this.SESSION_KEY) || 'null');
+      if (!s) return null;
+      if (Date.now() > s.exp) { this.logout(); return null; }
+      return s;
+    } catch { return null; }
+  },
+
+  logout() {
+    localStorage.removeItem(this.SESSION_KEY);
+  }
+};
+
+// =====================================================================
+// BOOKING ENGINE
+// =====================================================================
+const Bookings = {
+  getAll() {
+    return DB.read().bookings;
+  },
+
+  create(time, venue, team) {
+    const db = DB.read();
+    const maxId = db.bookings.reduce((m, b) => Math.max(m, b.id), 0);
+    const booking = { id: maxId + 1, time, venue, team, status: 'Confirmed', date: '2026-06-15' };
+    db.bookings.push(booking);
+
+    // update utilization
+    const map = { football: 'Football Turf', basketball: 'Basketball', tennis: 'Tennis', badminton: 'Badminton', cricket: 'Cricket' };
+    for (const [key, cat] of Object.entries(map)) {
+      if (venue.toLowerCase().includes(key)) {
+        db.utilization[cat] = Math.min((db.utilization[cat] || 0) + 3, 100);
+        break;
+      }
+    }
+
+    DB.write(db);
+    return booking;
+  },
+
+  getStats() {
+    const db = DB.read();
+    const todayBookings = db.bookings.filter(b => b.date === '2026-06-15');
+    return {
+      bookingsToday: todayBookings.length,
+      activeTournaments: 5,
+      activePlayers: 1280 + db.bookings.length,
+      revenueMonthly: `$${(24.6 + db.bookings.length * 0.05).toFixed(1)}k`,
+      utilization: db.utilization
+    };
+  }
+};
+
+// =====================================================================
+// ROUTER
+// =====================================================================
+let currentPage = 'home';
+let isRegisterMode = false;
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  currentPage = page;
+  window.scrollTo(0, 0);
+  syncUI();
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'compare') buildCompareTable();
+}
+
+// =====================================================================
+// UI SYNC
+// =====================================================================
+function syncUI() {
+  const session = Auth.getSession();
+  const pages = ['home', 'compare', 'dashboard'];
+
+  pages.forEach(p => {
+    const badge = document.getElementById('user-badge-' + p);
+    const btn = document.getElementById('auth-btn-' + p);
+    if (!badge || !btn) return;
+
+    if (session) {
+      badge.textContent = `HI, ${session.name.toUpperCase()}`;
+      badge.style.display = 'inline';
+      btn.textContent = 'Sign out';
+      btn.onclick = doLogout;
+    } else {
+      badge.style.display = 'none';
+      btn.textContent = 'Sign in';
+      btn.onclick = () => navigate('auth');
+    }
+  });
+
+  // Add booking button visibility
+  const addBtn = document.getElementById('add-booking-btn');
+  if (addBtn) addBtn.style.display = session ? 'inline-flex' : 'none';
+}
+
+function doLogout() {
+  Auth.logout();
+  showToast('Signed out successfully', 'success');
+  navigate('home');
+}
+
+// =====================================================================
+// DASHBOARD
+// =====================================================================
+function loadDashboard() {
+  const stats = Bookings.getStats();
+  const today = new Date().toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' });
+  document.getElementById('today-label').textContent = `Today · ${today}`;
+  document.getElementById('kpi-bookings').textContent = stats.bookingsToday;
+  document.getElementById('kpi-tournaments').textContent = stats.activeTournaments;
+  document.getElementById('kpi-players').textContent = stats.activePlayers.toLocaleString();
+  document.getElementById('kpi-revenue').textContent = stats.revenueMonthly;
+
+  renderBookings();
+  renderUtil(stats.utilization);
+}
+
+function renderBookings() {
+  const all = Bookings.getAll().sort((a, b) => a.time.localeCompare(b.time));
+  const container = document.getElementById('bookings-list');
+  if (!all.length) {
+    container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:12px 0">No bookings yet.</p>';
+    return;
+  }
+  container.innerHTML = all.map(b => `
+    <div class="booking-row">
+      <div class="booking-left">
+        <div class="booking-time">${b.time}</div>
+        <div>
+          <div class="booking-venue">${esc(b.venue)}</div>
+          <div class="booking-team">${esc(b.team)}</div>
+        </div>
+      </div>
+      <span class="status-badge status-${b.status.toLowerCase()}">${b.status}</span>
+    </div>
+  `).join('');
+}
+
+function renderUtil(util) {
+  const container = document.getElementById('util-bars');
+  const items = Object.entries(util);
+  container.innerHTML = items.map(([label, pct]) => `
+    <div class="util-item">
+      <div class="util-top">
+        <span class="util-label">${esc(label)}</span>
+        <span class="util-pct">${pct}%</span>
+      </div>
+      <div class="util-bar"><div class="util-fill" style="width:${pct}%"></div></div>
+    </div>
+  `).join('');
+}
+
+// =====================================================================
+// BOOKING MODAL
+// =====================================================================
+function openModal() {
+  if (!Auth.getSession()) {
+    showToast('Please sign in to book a slot', 'error');
+    navigate('auth');
+    return;
+  }
+  document.getElementById('booking-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('booking-modal').classList.remove('open');
+  document.getElementById('booking-form').reset();
+}
+
+function submitBooking(e) {
+  e.preventDefault();
+  const venue = document.getElementById('b-venue').value;
+  const time = document.getElementById('b-time').value;
+  const team = document.getElementById('b-team').value.trim();
+  if (!team) return;
+
+  Bookings.create(time, venue, team);
+  closeModal();
+  loadDashboard();
+  showToast(`Booking confirmed at ${venue}!`, 'success');
+}
+
+// =====================================================================
+// AUTH FORMS
+// =====================================================================
+function toggleAuthMode() {
+  isRegisterMode = !isRegisterMode;
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-title').textContent = isRegisterMode ? 'Create Account' : 'Sign In';
+  document.getElementById('auth-subtitle').textContent = isRegisterMode
+    ? 'Join SportZone to book venues and track matches.'
+    : 'Access your bookings, brackets and team stats.';
+  document.getElementById('name-field').style.display = isRegisterMode ? 'block' : 'none';
+  document.getElementById('auth-name').required = isRegisterMode;
+  document.getElementById('auth-submit-btn').innerHTML = isRegisterMode
+    ? 'Create Account <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+    : 'Sign In <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  document.getElementById('auth-toggle').innerHTML = isRegisterMode
+    ? 'Already have an account? <button class="toggle-link" onclick="toggleAuthMode()">Sign in</button>'
+    : 'New to SportZone? <button class="toggle-link" onclick="toggleAuthMode()">Create an account</button>';
+}
+
+function handleAuth(e) {
+  e.preventDefault();
+  const errorBox = document.getElementById('auth-error');
+  errorBox.style.display = 'none';
+
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const name = document.getElementById('auth-name').value.trim();
+
+  try {
+    let user;
+    if (isRegisterMode) {
+      user = Auth.register(email, password, name);
+      showToast(`Welcome, ${user.name}!`, 'success');
+    } else {
+      user = Auth.login(email, password);
+      showToast(`Welcome back, ${user.name}!`, 'success');
+    }
+    Auth.saveSession(user);
+    isRegisterMode = false;
+    document.getElementById('auth-form').reset();
+    navigate('dashboard');
+  } catch (err) {
+    errorBox.textContent = err.message;
+    errorBox.style.display = 'block';
+  }
+}
+
+function googleSignIn() {
+  // Simulate Google sign-in by creating/using a fixed Google demo account
+  const db = DB.read();
+  let googleUser = db.users.find(u => u.email === 'google.user@sportzone.com');
+  if (!googleUser) {
+    const maxId = db.users.reduce((m, u) => Math.max(m, u.id), 0);
+    googleUser = { id: maxId + 1, email: 'google.user@sportzone.com', password: '_google_', name: 'Google User' };
+    db.users.push(googleUser);
+    DB.write(db);
+  }
+  Auth.saveSession(googleUser);
+  showToast(`Welcome, ${googleUser.name}!`, 'success');
+  navigate('dashboard');
+}
+
+// =====================================================================
+// COMPARE TABLE
+// =====================================================================
+function buildCompareTable() {
+  const rows = [
+    ['Booking Time', '30–60 min calls', 'Under 60 seconds'],
+    ['Double Bookings', 'Frequent conflicts', 'Zero — real-time sync'],
+    ['Tournament Bracket', 'Drawn on paper', 'Auto-generated'],
+    ['Payments', 'Cash only', 'Card, UPI, wallets'],
+    ['Player Stats', 'Lost or unrecorded', 'Tracked automatically'],
+    ['Notifications', 'Manual SMS/calls', 'Instant push & email'],
+    ['Schedule Changes', 'Hours of coordination', 'One-click reschedule'],
+    ['Setup Cost', 'Staff overhead', 'Zero infrastructure'],
+  ];
+
+  const xIcon = `<svg class="x-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+  const checkIcon = `<svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+  document.getElementById('compare-rows').innerHTML = rows.map(([feat, bad, good]) => `
+    <div class="compare-table-row">
+      <div class="row-feature">${feat}</div>
+      <div class="row-bad">${xIcon} ${bad}</div>
+      <div class="row-good">${checkIcon} ${good}</div>
+    </div>
+  `).join('');
+}
+
+// =====================================================================
+// TOAST
+// =====================================================================
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type}`;
+  clearTimeout(toastTimer);
+  setTimeout(() => el.classList.add('show'), 10);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// =====================================================================
+// UTILS
+// =====================================================================
+function esc(str) {
+  return (str || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// Close modal when clicking overlay
+document.getElementById('booking-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('booking-modal')) closeModal();
+});
+
+// =====================================================================
+// BOOT
+// =====================================================================
+DB.init();
+syncUI();
+buildCompareTable();
+</script>
+</body>
+</html>

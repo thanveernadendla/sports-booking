@@ -1,0 +1,292 @@
+// Dashboard Interactive Script for SportZone
+
+document.addEventListener('DOMContentLoaded', () => {
+  const addBookingBtn = document.getElementById('add-booking-btn');
+  const bookingModal = document.getElementById('booking-modal');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+  const bookingForm = document.getElementById('booking-form');
+  const bookingsContainer = document.getElementById('bookings-container');
+
+  // Load dashboard data on mount
+  loadDashboardData();
+
+  // Modal Open/Close handlers
+  if (addBookingBtn) {
+    addBookingBtn.addEventListener('click', () => {
+      bookingModal.classList.remove('hidden');
+    });
+  }
+
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+      bookingModal.classList.add('hidden');
+    });
+  }
+
+  // Close modal when clicking background
+  if (bookingModal) {
+    bookingModal.addEventListener('click', (e) => {
+      if (e.target === bookingModal) {
+        bookingModal.classList.add('hidden');
+      }
+    });
+  }
+
+  // Handle new booking submission
+  if (bookingForm) {
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const venue = document.getElementById('booking-venue').value;
+      const time = document.getElementById('booking-time').value;
+      const team = document.getElementById('booking-team').value;
+      const token = localStorage.getItem('sportzone_token');
+
+      if (!token) {
+        alert('You must be signed in to book a slot.');
+        window.location.href = '/auth';
+        return;
+      }
+
+      try {
+        const res = await fetch(window.API_BASE_URL + '/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ venue, time, team })
+        });
+
+        if (res.ok) {
+          bookingModal.classList.add('hidden');
+          bookingForm.reset();
+          loadDashboardData(); // Refresh UI
+        } else {
+          const errData = await res.json();
+          alert(`Error: ${errData.error || 'Failed to submit booking.'}`);
+        }
+      } catch (error) {
+        console.error('Error creating booking:', error);
+        // Offline Fallback - simulate dynamic booking persistence
+        simulateOfflineBooking({ venue, time, team });
+        bookingModal.classList.add('hidden');
+        bookingForm.reset();
+      }
+    });
+  }
+});
+
+// Load statistics and list bookings
+async function loadDashboardData() {
+  const statBookings = document.getElementById('stat-bookings');
+  const statTournaments = document.getElementById('stat-tournaments');
+  const statPlayers = document.getElementById('stat-players');
+  const statRevenue = document.getElementById('stat-revenue');
+  const token = localStorage.getItem('sportzone_token');
+
+  if (!token) {
+    window.location.href = '/auth';
+    return;
+  }
+
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
+
+  try {
+    // 1. Fetch Stats
+    const statsRes = await fetch(window.API_BASE_URL + '/api/dashboard/stats', { headers });
+    if (statsRes.ok) {
+      const stats = await statsRes.json();
+      
+      if (statBookings) statBookings.textContent = stats.bookingsToday;
+      if (statTournaments) statTournaments.textContent = stats.activeTournaments;
+      if (statPlayers) statPlayers.textContent = stats.activePlayers.toLocaleString();
+      if (statRevenue) statRevenue.textContent = stats.revenueMonthly;
+      
+      updateUtilizationBars(stats.utilization);
+    }
+
+    // 2. Fetch Bookings
+    const bookingsRes = await fetch(window.API_BASE_URL + '/api/bookings', { headers });
+    if (bookingsRes.ok) {
+      const bookings = await bookingsRes.json();
+      renderBookingsList(bookings);
+    } else if (bookingsRes.status === 401) {
+      window.location.href = '/auth';
+    }
+  } catch (error) {
+    console.warn('Backend server not responding. Falling back to offline local storage data.');
+    loadOfflineDashboardData();
+  }
+}
+
+// Render the list of bookings in HTML
+function renderBookingsList(bookings) {
+  const bookingsContainer = document.getElementById('bookings-container');
+  if (!bookingsContainer) return;
+
+  if (bookings.length === 0) {
+    bookingsContainer.innerHTML = '<p class="text-sm text-muted-foreground py-4 text-center">No bookings found for today.</p>';
+    return;
+  }
+
+  // Sort bookings by time chronologically
+  bookings.sort((a, b) => a.time.localeCompare(b.time));
+
+  bookingsContainer.innerHTML = bookings.map(booking => {
+    const isConfirmed = booking.status === 'Confirmed';
+    const badgeClass = isConfirmed 
+      ? 'bg-success/20 text-success' 
+      : 'bg-accent/20 text-accent';
+      
+    return `
+      <div class="flex flex-col gap-2 py-3 border-b border-border last:border-none">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="font-display font-bold text-primary w-14 text-lg">${booking.time}</div>
+            <div>
+              <p class="font-semibold text-sm">${escapeHTML(booking.venue)}</p>
+              <p class="text-xs text-muted-foreground">${escapeHTML(booking.team)}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold px-3 py-1 rounded-full ${badgeClass}">${booking.status}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-muted-foreground">
+          <span>Price: $${booking.price || 0}</span>
+          <span>${booking.date}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Update utilization progress bars
+function updateUtilizationBars(utilization) {
+  const categories = {
+    'Football Turf': { percent: 'util-football-percent', bar: 'util-football-bar' },
+    'Basketball': { percent: 'util-basketball-percent', bar: 'util-basketball-bar' },
+    'Tennis': { percent: 'util-tennis-percent', bar: 'util-tennis-bar' },
+    'Badminton': { percent: 'util-badminton-percent', bar: 'util-badminton-bar' },
+    'Cricket': { percent: 'util-cricket-percent', bar: 'util-cricket-bar' }
+  };
+
+  for (const [key, elements] of Object.entries(categories)) {
+    const percentEl = document.getElementById(elements.percent);
+    const barEl = document.getElementById(elements.bar);
+    const val = utilization[key] || 0;
+    
+    if (percentEl) percentEl.textContent = `${val}%`;
+    if (barEl) barEl.style.width = `${val}%`;
+  }
+}
+
+// Escape HTML helper
+function escapeHTML(str) {
+  return str.replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag)
+  );
+}
+
+const venuePrices = {
+  'Arena 7 Football': 120,
+  'Skyline Basketball': 100,
+  'Center Court Tennis': 90,
+  'SmashHouse Badminton': 80,
+  'Pulse Cricket Ground': 150,
+  'Test Arena': 130
+};
+
+function getVenuePrice(venue) {
+  return venuePrices[venue] || 0;
+}
+
+/* ==========================================================================
+   Offline / Serverless Simulation logic
+   Allows the app to work seamlessly even if the Node server is not active.
+   ========================================================================== */
+
+const OFFLINE_SEED_DATA = {
+  bookings: [
+    { id: 1, time: "10:00", venue: "Arena 7 Football", team: "Team Eagles", price: 120, status: "Confirmed", date: "2026-06-15" },
+    { id: 2, time: "12:00", venue: "Skyline Basketball", team: "Marcus J.", price: 100, status: "Confirmed", date: "2026-06-15" },
+    { id: 3, time: "14:00", venue: "Center Court Tennis", team: "Anna K.", price: 90, status: "Pending", date: "2026-06-15" },
+    { id: 4, time: "16:00", venue: "SmashHouse Badminton", team: "Dev R.", price: 80, status: "Confirmed", date: "2026-06-15" },
+    { id: 5, time: "18:00", venue: "Pulse Cricket Ground", team: "Royals XI", price: 150, status: "Confirmed", date: "2026-06-15" }
+  ],
+  utilization: {
+    "Football Turf": 92,
+    "Basketball": 78,
+    "Tennis": 65,
+    "Badminton": 85,
+    "Cricket": 54
+  }
+};
+
+function getLocalData() {
+  const localData = localStorage.getItem('sportzone_offline_db');
+  if (!localData) {
+    localStorage.setItem('sportzone_offline_db', JSON.stringify(OFFLINE_SEED_DATA));
+    return OFFLINE_SEED_DATA;
+  }
+  return JSON.parse(localData);
+}
+
+function loadOfflineDashboardData() {
+  const data = getLocalData();
+  
+  const statBookings = document.getElementById('stat-bookings');
+  const statTournaments = document.getElementById('stat-tournaments');
+  const statPlayers = document.getElementById('stat-players');
+  const statRevenue = document.getElementById('stat-revenue');
+
+  if (statBookings) statBookings.textContent = data.bookings.length;
+  if (statTournaments) statTournaments.textContent = '5';
+  if (statPlayers) statPlayers.textContent = (1280 + data.bookings.length).toLocaleString();
+  if (statRevenue) {
+    const totalOfflineRevenue = data.bookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
+    statRevenue.textContent = `$${(totalOfflineRevenue / 1000).toFixed(1)}k`;
+  }
+
+  updateUtilizationBars(data.utilization);
+  renderBookingsList(data.bookings);
+}
+
+function simulateOfflineBooking({ venue, time, team }) {
+  const data = getLocalData();
+  
+  const newBooking = {
+    id: Date.now(),
+    time,
+    venue,
+    team,
+    price: getVenuePrice(venue),
+    status: 'Confirmed',
+    date: '2026-06-15'
+  };
+
+  data.bookings.push(newBooking);
+
+  // Update offline utilization stats
+  let category = '';
+  if (venue.toLowerCase().includes('football')) category = 'Football Turf';
+  else if (venue.toLowerCase().includes('basketball')) category = 'Basketball';
+  else if (venue.toLowerCase().includes('tennis')) category = 'Tennis';
+  else if (venue.toLowerCase().includes('badminton')) category = 'Badminton';
+  else if (venue.toLowerCase().includes('cricket')) category = 'Cricket';
+
+  if (category && data.utilization[category] !== undefined) {
+    data.utilization[category] = Math.min(data.utilization[category] + 3, 100);
+  }
+
+  localStorage.setItem('sportzone_offline_db', JSON.stringify(data));
+  loadOfflineDashboardData();
+  alert('Booking successfully created! (Simulated Offline Mode)');
+}

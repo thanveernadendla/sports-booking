@@ -963,7 +963,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
             Add Booking
           </button>
-          <span class="dashboard-date" id="today-label">Today · 6/15/2026</span>
+          <span class="dashboard-date" id="today-label">Today · --</span>
         </div>
       </div>
 
@@ -984,23 +984,7 @@
           <div class="kpi-label">Active Tournaments</div>
           <div class="kpi-value" id="kpi-tournaments">6</div>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-top">
-            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></div>
-            <span class="kpi-delta">+8%</span>
-          </div>
-          <div class="kpi-label">Active Players</div>
-          <div class="kpi-value" id="kpi-players">—</div>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-top">
-            <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <span class="kpi-delta">+18%</span>
-          </div>
-          <div class="kpi-label">Revenue (mo)</div>
-          <div class="kpi-value" id="kpi-revenue">—</div>
-        </div>
-      </div>
 
       <div class="dashboard-grid">
         <div class="panel">
@@ -1118,14 +1102,15 @@ const DB = {
   KEY: 'sz_db_v2',
 
   seed() {
+    const today = new Date().toISOString().slice(0,10);
     return {
       users: [{ id: 1, email: 'demo@sportzone.com', password: 'password123', name: 'Demo Admin' }],
       bookings: [
-        { id: 1, time: '10:00', venue: 'Arena 7 Football', team: 'Team Eagles', status: 'Confirmed', date: '2026-06-15' },
-        { id: 2, time: '12:00', venue: 'Skyline Basketball', team: 'Marcus J.', status: 'Confirmed', date: '2026-06-15' },
-        { id: 3, time: '14:00', venue: 'Center Court Tennis', team: 'Anna K.', status: 'Pending', date: '2026-06-15' },
-        { id: 4, time: '16:00', venue: 'SmashHouse Badminton', team: 'Dev R.', status: 'Confirmed', date: '2026-06-15' },
-        { id: 5, time: '18:00', venue: 'Pulse Cricket Ground', team: 'Royals XI', status: 'Confirmed', date: '2026-06-15' }
+        { id: 1, time: '10:00', venue: 'Arena 7 Football', team: 'Team Eagles', status: 'Confirmed', date: today },
+        { id: 2, time: '12:00', venue: 'Skyline Basketball', team: 'Marcus J.', status: 'Confirmed', date: today },
+        { id: 3, time: '14:00', venue: 'Center Court Tennis', team: 'Anna K.', status: 'Pending', date: today },
+        { id: 4, time: '16:00', venue: 'SmashHouse Badminton', team: 'Dev R.', status: 'Confirmed', date: today },
+        { id: 5, time: '18:00', venue: 'Pulse Cricket Ground', team: 'Royals XI', status: 'Confirmed', date: today }
       ],
       utilization: { 'Football Turf': 92, 'Basketball': 78, 'Tennis': 65, 'Badminton': 85, 'Cricket': 54 }
     };
@@ -1203,8 +1188,21 @@ const Bookings = {
 
   create(time, venue, team) {
     const db = DB.read();
+    const bookingDate = new Date().toISOString().slice(0,10);
+
+    // Prevent bookings at the same time slot for the same date (tournament conflict)
+    const existingBooking = db.bookings.find(b => 
+      b.time === time && 
+      b.date === bookingDate
+    );
+
+    if (existingBooking) {
+      showToast(`A tournament is already scheduled at ${time}. Please choose a different time.`, 'error');
+      return null;
+    }
+
     const maxId = db.bookings.reduce((m, b) => Math.max(m, b.id), 0);
-    const booking = { id: maxId + 1, time, venue, team, status: 'Confirmed', date: '2026-06-15' };
+    const booking = { id: maxId + 1, time, venue, team, status: 'Confirmed', date: bookingDate };
     db.bookings.push(booking);
 
     // update utilization
@@ -1222,12 +1220,20 @@ const Bookings = {
 
   getStats() {
     const db = DB.read();
-    const todayBookings = db.bookings.filter(b => b.date === '2026-06-15');
+    const todayDate = new Date().toISOString().slice(0,10);
+    const todayBookings = db.bookings.filter(b => b.date === todayDate);
+    const now = new Date();
+    const bookingsThisMonth = db.bookings.filter(b => {
+      if (!b.date) return false;
+      const d = new Date(b.date);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }).length;
+    const revenue = bookingsThisMonth * 200;
     return {
       bookingsToday: todayBookings.length,
       activeTournaments: 5,
       activePlayers: 1280 + db.bookings.length,
-      revenueMonthly: `$${(24.6 + db.bookings.length * 0.05).toFixed(1)}k`,
+      revenueMonthly: `$${(revenue / 1000).toFixed(1)}k`,
       utilization: db.utilization
     };
   }
@@ -1359,10 +1365,12 @@ function submitBooking(e) {
   const team = document.getElementById('b-team').value.trim();
   if (!team) return;
 
-  Bookings.create(time, venue, team);
-  closeModal();
-  loadDashboard();
-  showToast(`Booking confirmed at ${venue}!`, 'success');
+  const result = Bookings.create(time, venue, team);
+  if (result) {
+    closeModal();
+    loadDashboard();
+    showToast(`Booking confirmed at ${venue}!`, 'success');
+  }
 }
 
 // =====================================================================

@@ -3,12 +3,33 @@
 // Configurable API base URL for mobile packaging.
 // If running in WebView (Capacitor/Cordova) or local file, direct requests to your server's host/port.
 // For Android emulator, use 'http://10.0.2.2:3000'. For iOS simulator or web, use localhost/relative path.
-window.API_BASE_URL = (window.location.origin.includes('capacitor') || window.location.origin.startsWith('file:'))
-  ? 'http://localhost:3000' // Change this to your local network IP (e.g., 'http://192.168.1.100:3000') when testing on real phones
-  : '';
+window.API_BASE_URL = ''; // default, may be overridden by /config.json
+
+// Load runtime config from /config.json (if present) so phones/other devices
+// can point to the server by editing a single file instead of changing code.
+window.__apiConfigLoaded = (async () => {
+  try {
+    const res = await fetch('/config.json');
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg.apiBaseUrl && typeof cfg.apiBaseUrl === 'string') {
+        window.API_BASE_URL = cfg.apiBaseUrl.replace(/\/+$/,'');
+      }
+      return;
+    }
+  } catch (e) {
+    // ignore fetch errors
+  }
+
+  // Fallback for local file / Capacitor packaging
+  if (window.location.origin.includes('capacitor') || window.location.origin.startsWith('file:')) {
+    window.API_BASE_URL = 'http://localhost:3000';
+  }
+})();
 
 // Check and update auth state on load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await window.__apiConfigLoaded;
   updateAuthState();
   highlightActiveLink();
 });

@@ -18,7 +18,7 @@ import (
 
 const (
 	Port      = ":3000"
-	SecretKey = "sportzone_super_secret_key_12345"
+		Date:   time.Now().Format("2006-01-02"),
 	DBFile    = "data/db.json"
 )
 
@@ -453,7 +453,7 @@ func handleBookings(w http.ResponseWriter, r *http.Request) {
 			Venue:  req.Venue,
 			Team:   req.Team,
 			Status: "Confirmed",
-			Date:   "2026-06-15",
+			Date:   time.Now().Format("2006-01-02"),
 		}
 
 		db.Bookings = append(db.Bookings, newBooking)
@@ -507,7 +507,7 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 
 	bookingsCount := 0
 	for _, b := range db.Bookings {
-		if b.Date == "2026-06-15" {
+		if b.Date == time.Now().Format("2006-01-02") {
 			bookingsCount++
 		}
 	}

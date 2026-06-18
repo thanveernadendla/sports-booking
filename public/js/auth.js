@@ -11,6 +11,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const errorMsg = document.getElementById('error-msg');
   const toggleContainer = document.getElementById('toggle-container');
 
+  // If a user is already signed in on this device, show a small banner
+  // allowing them to switch accounts (clears token + user and reloads).
+  const existingUserRaw = localStorage.getItem('sportzone_user');
+  if (existingUserRaw) {
+    try {
+      const existingUser = JSON.parse(existingUserRaw);
+      const banner = document.createElement('div');
+      banner.className = 'mb-4 p-3 rounded-md bg-secondary/10 border border-border text-sm flex items-center justify-between';
+      banner.innerHTML = `<div>Signed in as <strong>${existingUser.email}</strong></div><div><button id="switch-account-btn" class="text-primary font-semibold">Use different account</button></div>`;
+      if (authForm && authForm.parentNode) {
+        authForm.parentNode.insertBefore(banner, authForm);
+        document.getElementById('switch-account-btn').addEventListener('click', () => {
+          localStorage.removeItem('sportzone_token');
+          localStorage.removeItem('sportzone_user');
+          window.location.reload();
+        });
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+  }
+
   let isRegisterMode = false;
 
   // Toggle mode function

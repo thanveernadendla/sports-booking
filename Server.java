@@ -112,12 +112,13 @@ public class Server {
     }
 
     private static void seedDefaultBookings() {
+        String today = java.time.LocalDate.now().toString();
         String[][] seedBookings = {
-            {"1", "10:00", "Arena 7 Football", "Team Eagles", "Confirmed", "2026-06-15"},
-            {"2", "12:00", "Skyline Basketball", "Marcus J.", "Confirmed", "2026-06-15"},
-            {"3", "14:00", "Center Court Tennis", "Anna K.", "Pending", "2026-06-15"},
-            {"4", "16:00", "SmashHouse Badminton", "Dev R.", "Confirmed", "2026-06-15"},
-            {"5", "18:00", "Pulse Cricket Ground", "Royals XI", "Confirmed", "2026-06-15"}
+            {"1", "10:00", "Arena 7 Football", "Team Eagles", "Confirmed", today},
+            {"2", "12:00", "Skyline Basketball", "Marcus J.", "Confirmed", today},
+            {"3", "14:00", "Center Court Tennis", "Anna K.", "Pending", today},
+            {"4", "16:00", "SmashHouse Badminton", "Dev R.", "Confirmed", today},
+            {"5", "18:00", "Pulse Cricket Ground", "Royals XI", "Confirmed", today}
         };
         for (String[] sb : seedBookings) {
             Map<String, String> b = new HashMap<>();
@@ -375,7 +376,7 @@ public class Server {
                 newBooking.put("venue", venue);
                 newBooking.put("team", team);
                 newBooking.put("status", "Confirmed");
-                newBooking.put("date", "2026-06-15");
+                newBooking.put("date", java.time.LocalDate.now().toString());
                 bookings.add(newBooking);
 
                 // Update utilization
@@ -403,8 +404,9 @@ public class Server {
         private void handleStats(HttpExchange exchange) throws Exception {
             int bookingsCount = 0;
             synchronized (dbLock) {
+                String today = java.time.LocalDate.now().toString();
                 for (Map<String, String> b : bookings) {
-                    if ("2026-06-15".equals(b.get("date"))) {
+                    if (today.equals(b.get("date"))) {
                         bookingsCount++;
                     }
                 }

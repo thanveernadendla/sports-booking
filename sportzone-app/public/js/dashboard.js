@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  setTodayDate();
+
   // Handle new booking submission
   if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
@@ -79,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load statistics and list bookings
 async function loadDashboardData() {
+  setTodayDate();
   const statBookings = document.getElementById('stat-bookings');
   const statTournaments = document.getElementById('stat-tournaments');
   const statPlayers = document.getElementById('stat-players');
@@ -165,6 +168,13 @@ function updateUtilizationBars(utilization) {
 }
 
 // Escape HTML helper
+function setTodayDate() {
+  const dateEl = document.getElementById('today-date');
+  if (!dateEl) return;
+  const today = new Date().toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' });
+  dateEl.textContent = `Today · ${today}`;
+}
+
 function escapeHTML(str) {
   return str.replace(/[&<>'"]/g, 
     tag => ({
@@ -182,22 +192,25 @@ function escapeHTML(str) {
    Allows the app to work seamlessly even if the Node server is not active.
    ========================================================================== */
 
-const OFFLINE_SEED_DATA = {
-  bookings: [
-    { id: 1, time: "10:00", venue: "Arena 7 Football", team: "Team Eagles", status: "Confirmed", date: "2026-06-15" },
-    { id: 2, time: "12:00", venue: "Skyline Basketball", team: "Marcus J.", status: "Confirmed", date: "2026-06-15" },
-    { id: 3, time: "14:00", venue: "Center Court Tennis", team: "Anna K.", status: "Pending", date: "2026-06-15" },
-    { id: 4, time: "16:00", venue: "SmashHouse Badminton", team: "Dev R.", status: "Confirmed", date: "2026-06-15" },
-    { id: 5, time: "18:00", venue: "Pulse Cricket Ground", team: "Royals XI", status: "Confirmed", date: "2026-06-15" }
-  ],
-  utilization: {
-    "Football Turf": 92,
-    "Basketball": 78,
-    "Tennis": 65,
-    "Badminton": 85,
-    "Cricket": 54
-  }
-};
+const OFFLINE_SEED_DATA = (() => {
+  const today = new Date().toISOString().slice(0,10);
+  return {
+    bookings: [
+      { id: 1, time: "10:00", venue: "Arena 7 Football", team: "Team Eagles", status: "Confirmed", date: today },
+      { id: 2, time: "12:00", venue: "Skyline Basketball", team: "Marcus J.", status: "Confirmed", date: today },
+      { id: 3, time: "14:00", venue: "Center Court Tennis", team: "Anna K.", status: "Pending", date: today },
+      { id: 4, time: "16:00", venue: "SmashHouse Badminton", team: "Dev R.", status: "Confirmed", date: today },
+      { id: 5, time: "18:00", venue: "Pulse Cricket Ground", team: "Royals XI", status: "Confirmed", date: today }
+    ],
+    utilization: {
+      "Football Turf": 92,
+      "Basketball": 78,
+      "Tennis": 65,
+      "Badminton": 85,
+      "Cricket": 54
+    }
+  };
+})();
 
 function getLocalData() {
   const localData = localStorage.getItem('sportzone_offline_db');
@@ -217,9 +230,17 @@ function loadOfflineDashboardData() {
   const statRevenue = document.getElementById('stat-revenue');
 
   if (statBookings) statBookings.textContent = data.bookings.length;
-  if (statTournaments) statTournaments.textContent = '6';
+  if (statTournaments) statTournaments.textContent = '5';
   if (statPlayers) statPlayers.textContent = (1280 + data.bookings.length).toLocaleString();
-  if (statRevenue) statRevenue.textContent = `$${(24.6 + (data.bookings.length * 0.05)).toFixed(1)}k`;
+  if (statRevenue) {
+    const now = new Date();
+    const bookingsThisMonthCount = data.bookings.filter(b => {
+      if (!b.date) return false;
+      const d = new Date(b.date);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }).length;
+    statRevenue.textContent = `$${((bookingsThisMonthCount * 200) / 1000).toFixed(1)}k`;
+  }
 
   updateUtilizationBars(data.utilization);
   renderBookingsList(data.bookings);
@@ -228,13 +249,25 @@ function loadOfflineDashboardData() {
 function simulateOfflineBooking({ venue, time, team }) {
   const data = getLocalData();
   
+  // Prevent bookings at the same time slot for the same date (tournament conflict)
+  const today = new Date().toISOString().slice(0,10);
+  const existingBooking = data.bookings.find(b => 
+    b.time === time && 
+    b.date === today
+  );
+
+  if (existingBooking) {
+    alert(`A tournament is already scheduled at ${time}. Please choose a different time.`);
+    return;
+  }
+  
   const newBooking = {
     id: Date.now(),
     time,
     venue,
     team,
     status: 'Confirmed',
-    date: '2026-06-15'
+    date: today
   };
 
   data.bookings.push(newBooking);

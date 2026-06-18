@@ -156,6 +156,18 @@ app.post('/api/bookings', authenticateToken, (req, res) => {
   }
 
   const db = readDB();
+  const bookingDate = new Date().toISOString().slice(0, 10);
+
+  // Prevent tournaments from being booked at the same time on the same day
+  const existingBooking = db.bookings.find(b => 
+    b.time === time && 
+    b.date === bookingDate
+  );
+
+  if (existingBooking) {
+    return res.status(409).json({ error: `A tournament is already scheduled at ${time}. Please choose a different time.` });
+  }
+
   const price = getVenuePrice(venue);
   const newBooking = {
     id: db.bookings.length > 0 ? Math.max(...db.bookings.map(b => b.id)) + 1 : 1,
@@ -165,7 +177,7 @@ app.post('/api/bookings', authenticateToken, (req, res) => {
     team,
     price,
     status: 'Confirmed',
-    date: '2026-06-15' // Anchored to the app's current date for demonstration
+    date: bookingDate // Anchored to the app's current date for demonstration
   };
 
   db.bookings.push(newBooking);
@@ -191,18 +203,27 @@ app.post('/api/bookings', authenticateToken, (req, res) => {
 app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
   const db = readDB();
   const userBookings = db.bookings.filter(b => b.userId === req.user.id);
-  const bookingsCount = userBookings.filter(b => b.date === '2026-06-15').length;
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const bookingsCount = userBookings.filter(b => b.date === todayDate).length;
   const now = Date.now();
   const activeUsers = Array.from(onlineUsers.values()).filter(timestamp => now - timestamp <= ONLINE_TIMEOUT_MS).length;
   const activeTournaments = 5;
-  const bookedRevenue = userBookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
+
+  // Compute monthly revenue as (bookings in current month) * 200
+  const today = new Date();
+  const bookingsThisMonth = db.bookings.filter(b => {
+    if (!b.date) return false;
+    const d = new Date(b.date);
+    return d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth();
+  }).length;
+  const revenue = bookingsThisMonth * 200;
 
   // Dynamic stats
   res.json({
     bookingsToday: bookingsCount,
     activeTournaments,
     activePlayers: activeUsers,
-    revenueMonthly: `$${(24.6 + bookedRevenue / 1000).toFixed(1)}k`,
+    revenueMonthly: `$${(revenue / 1000).toFixed(1)}k`,
     utilization: db.utilization
   });
 });

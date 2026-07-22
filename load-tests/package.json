@@ -1,0 +1,13 @@
+{
+  "name": "sportzone-load-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Baseline load testing for SportZone",
+  "scripts": {
+    "test": "node baseline.load.js"
+  },
+  "dependencies": {
+    "autocannon": "^8.0.0",
+    "exceljs": "^4.4.0"
+  }
+}

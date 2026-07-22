@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Login - SportZone</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pro.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pro-app">
+  <header class="pro-topbar">
+    <div class="pro-shell pro-nav">
+      <a class="pro-brand" href="index.html"><span class="brand-cube">SZ</span><span>SportZone</span></a>
+      <nav class="pro-links">
+        <a class="pro-link" href="index.html">Home</a>
+        <a class="pro-link" href="dashboard.html">Booking App</a>
+        <a class="pro-link" href="admin-login.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pro-shell pro-grid">
+    <section>
+      <p class="pro-kicker">Player access</p>
+      <h1 class="pro-title" id="form-title">Mobile login</h1>
+      <p class="pro-copy" id="form-copy">Login or create a mobile account to book live SportZone slots.</p>
+      <div class="arena-3d" style="min-height:260px">
+        <div class="arena-stage" style="width:min(360px,100%)">
+          <div class="arena-floor"></div>
+          <div class="arena-panel one"><strong>OTP</strong><span>Mobile first flow</span></div>
+          <div class="arena-panel two"><strong>₹</strong><span>Rupee bookings</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pro-card pro-card-pad">
+      <form id="auth-form" data-testid="customer-auth-form">
+        <div class="form-field" id="name-field" style="display:none">
+          <label for="auth-name">Full name</label>
+          <input id="auth-name" data-testid="customer-name" type="text" placeholder="Your name" />
+        </div>
+        <div class="form-field">
+          <label for="auth-phone">Mobile number</label>
+          <input id="auth-phone" data-testid="customer-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="9876543210" required />
+        </div>
+        <div class="form-field">
+          <label for="auth-password">Password</label>
+          <input id="auth-password" data-testid="customer-password" type="password" placeholder="Password" required />
+        </div>
+        <p id="error-msg" style="color:#dc2626;font-weight:700;margin:8px 0"></p>
+        <button id="submit-btn" data-testid="customer-submit" class="pro-button" type="submit" style="width:100%">Login</button>
+      </form>
+      <p id="toggle-container" class="muted" style="margin-top:18px;text-align:center">
+        New player? <button id="toggle-auth-btn" data-testid="toggle-register" type="button">Create account</button>
+      </p>
+      <div class="pro-card" style="padding:14px;margin-top:18px;background:#f8fafc">
+        <strong>Customer access</strong>
+        <p class="muted">New customers can register with mobile number and start using the app immediately.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

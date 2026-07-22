@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Dashboard — SportZone</title>
+  <meta name="description" content="Manage bookings, tournaments, players, and revenue from one dashboard."/>
+</head>
+<body>
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-[var(--shadow-glow)] group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-5 h-5 text-primary-foreground" aria-hidden="true">
+              <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+            </svg>
+          </div>
+          <span class="font-display text-2xl font-bold tracking-tight">SPORT<span class="text-primary">ZONE</span></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-1" id="nav-links">
+          <a href="/" class="px-4 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" data-page="home">Home</a>
+          <a href="/compare" class="px-4 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" data-page="compare">Why SportZone</a>
+          <a href="/dashboard" class="px-4 py-2 rounded-md text-sm font-semibold text-primary bg-secondary" data-page="dashboard">Dashboard</a>
+        </nav>
+        
+        <div class="flex items-center gap-4">
+          <span id="user-display" class="hidden text-xs text-muted-foreground font-semibold"></span>
+          <a id="auth-btn" class="inline-flex items-center px-5 py-2 rounded-md bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition shadow-[var(--shadow-glow)]" href="/auth">Sign in</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+      <section class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex items-end justify-between flex-wrap gap-4">
+          <div>
+            <p class="text-primary font-display tracking-widest text-sm uppercase">CONTROL CENTER</p>
+            <h1 class="font-display text-5xl md:text-6xl font-bold uppercase">Dashboard</h1>
+          </div>
+          <div class="flex items-center gap-4">
+            <button id="add-booking-btn" class="hidden inline-flex items-center gap-2 px-5 py-2 rounded-md bg-primary text-primary-foreground font-bold text-sm shadow-[var(--shadow-glow)] hover:scale-[1.02] transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              Add Booking
+            </button>
+            <p class="text-sm text-muted-foreground font-mono" id="today-date">Today · 6/15/2026</p>
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
+          <div class="p-5 rounded-2xl border border-border bg-card">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-5 h-5"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+              </div>
+              <span class="text-xs text-success font-semibold">+12%</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-4 uppercase tracking-wider">Bookings Today</p>
+            <p class="font-display text-3xl font-bold mt-1" id="stat-bookings">...</p>
+          </div>
+          
+          <div class="p-5 rounded-2xl border border-border bg-card">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trophy w-5 h-5"><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"></path><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"></path><path d="M18 9h1.5a1 1 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"></path><path d="M6 9H4.5a1 1 0 0 1 0-5H6"></path></svg>
+              </div>
+              <span class="text-xs text-success font-semibold">+2</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-4 uppercase tracking-wider">Active Tournaments</p>
+            <p class="font-display text-3xl font-bold mt-1" id="stat-tournaments">...</p>
+          </div>
+          
+          <div class="p-5 rounded-2xl border border-border bg-card">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              </div>
+              <span class="text-xs text-success font-semibold">+8%</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-4 uppercase tracking-wider">Active Players</p>
+            <p class="font-display text-3xl font-bold mt-1" id="stat-players">...</p>
+          </div>
+          
+          <div class="p-5 rounded-2xl border border-border bg-card">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign w-5 h-5"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <span class="text-xs text-success font-semibold">+18%</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-4 uppercase tracking-wider">Revenue (mo)</p>
+            <p class="font-display text-3xl font-bold mt-1" id="stat-revenue">...</p>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-5 mt-8">
+          <!-- Bookings List -->
+          <div class="lg:col-span-2 p-6 rounded-2xl border border-border bg-card">
+            <div class="flex items-center justify-between">
+              <h2 class="font-display text-xl font-bold uppercase">Today's Bookings</h2>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up w-4 h-4 text-primary"><path d="M16 7h6v6"></path><path d="m22 7-8.5 8.5-5-5L2 17"></path></svg>
+            </div>
+            <div class="mt-5 divide-y divide-border" id="bookings-container">
+              <p class="text-sm text-muted-foreground py-4">Loading bookings...</p>
+            </div>
+          </div>
+          
+          <!-- Utilization -->
+          <div class="p-6 rounded-2xl border border-border bg-card">
+            <h2 class="font-display text-xl font-bold uppercase">Utilization</h2>
+            <div class="mt-5 space-y-4" id="utilization-container">
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-muted-foreground">Football Turf</span>
+                  <span class="font-bold" id="util-football-percent">...</span>
+                </div>
+                <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div class="h-full" id="util-football-bar" style="width:0%;background:var(--gradient-primary)"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-muted-foreground">Basketball</span>
+                  <span class="font-bold" id="util-basketball-percent">...</span>
+                </div>
+                <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div class="h-full" id="util-basketball-bar" style="width:0%;background:var(--gradient-primary)"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-muted-foreground">Tennis</span>
+                  <span class="font-bold" id="util-tennis-percent">...</span>
+                </div>
+                <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div class="h-full" id="util-tennis-bar" style="width:0%;background:var(--gradient-primary)"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-muted-foreground">Badminton</span>
+                  <span class="font-bold" id="util-badminton-percent">...</span>
+                </div>
+                <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div class="h-full" id="util-badminton-bar" style="width:0%;background:var(--gradient-primary)"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-muted-foreground">Cricket</span>
+                  <span class="font-bold" id="util-cricket-percent">...</span>
+                </div>
+                <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div class="h-full" id="util-cricket-bar" style="width:0%;background:var(--gradient-primary)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-6 backdrop-blur-sm">
+      <div class="w-full max-w-md bg-card border border-border rounded-2xl p-6 md:p-8 relative">
+        <button id="close-modal-btn" class="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+        <h2 class="font-display text-2xl font-bold uppercase mb-6 text-primary">Book a Slot</h2>
+        <form id="booking-form" class="space-y-4">
+          <label class="block">
+            <span class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">Venue type</span>
+            <select id="booking-venue" required class="w-full mt-1 px-3 py-3 rounded-md bg-background border border-border focus:border-primary focus:outline-none text-sm text-foreground">
+              <option value="Arena 7 Football">Arena 7 Football (Turf)</option>
+              <option value="Skyline Basketball">Skyline Basketball (Court)</option>
+              <option value="Center Court Tennis">Center Court Tennis</option>
+              <option value="SmashHouse Badminton">SmashHouse Badminton</option>
+              <option value="Pulse Cricket Ground">Pulse Cricket Ground</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">Time Slot</span>
+            <select id="booking-time" required class="w-full mt-1 px-3 py-3 rounded-md bg-background border border-border focus:border-primary focus:outline-none text-sm text-foreground">
+              <option value="08:00">08:00 - 09:00</option>
+              <option value="10:00">10:00 - 11:00</option>
+              <option value="12:00">12:00 - 13:00</option>
+              <option value="14:00">14:00 - 15:00</option>
+              <option value="16:00">16:00 - 17:00</option>
+              <option value="18:00">18:00 - 19:00</option>
+              <option value="20:00">20:00 - 21:00</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-xs font-semibold tracking-wider text-muted-foreground uppercase">Team Name / Booked By</span>
+            <input type="text" id="booking-team" required placeholder="e.g. Royals XI or John D." class="w-full mt-1 px-3 py-3 rounded-md bg-background border border-border focus:border-primary focus:outline-none text-sm text-foreground" />
+          </label>
+          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 mt-2 rounded-md bg-primary text-primary-foreground font-bold shadow-[var(--shadow-glow)] hover:scale-[1.02] transition">
+            Book Now
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-border mt-24">
+      <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+        <p>© 2026 SportZone — Booking & Tournament Management</p>
+        <p class="font-display tracking-wider">PLAY · BOOK · COMPETE</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

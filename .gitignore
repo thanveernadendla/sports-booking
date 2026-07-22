@@ -1,0 +1,17 @@
+.vercel
+node_modules/
+
+selenium-tests/node_modules/
+selenium-tests/reports/
+
+appium-tests/node_modules/
+appium-tests/reports/
+
+load-tests/node_modules/
+load-tests/reports/
+
+android/.gradle/
+android/app/build/
+
+*.log
+server.pid

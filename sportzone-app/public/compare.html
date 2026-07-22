@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>SportZone vs Manual Methods — Why It Wins</title>
+  <meta name="description" content="A clear comparison of SportZone against traditional manual sports booking and tournament management."/>
+</head>
+<body>
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-[var(--shadow-glow)] group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-5 h-5 text-primary-foreground" aria-hidden="true">
+              <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+            </svg>
+          </div>
+          <span class="font-display text-2xl font-bold tracking-tight">SPORT<span class="text-primary">ZONE</span></span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-1" id="nav-links">
+          <a href="/" class="px-4 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" data-page="home">Home</a>
+          <a href="/compare" class="px-4 py-2 rounded-md text-sm font-semibold text-primary bg-secondary" data-page="compare">Why SportZone</a>
+          <a href="/dashboard" class="px-4 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" data-page="dashboard">Dashboard</a>
+        </nav>
+        
+        <div class="flex items-center gap-4">
+          <span id="user-display" class="hidden text-xs text-muted-foreground font-semibold"></span>
+          <a id="auth-btn" class="inline-flex items-center px-5 py-2 rounded-md bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition shadow-[var(--shadow-glow)]" href="/auth">Sign in</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+      <section class="max-w-6xl mx-auto px-6 py-16">
+        <p class="text-primary font-display tracking-widest text-sm uppercase">THE EFFICIENCY CASE</p>
+        <h1 class="font-display text-5xl md:text-7xl font-bold uppercase mt-2 leading-none">SportZone vs<br/>the <span class="text-muted-foreground line-through">Old Way</span></h1>
+        <p class="text-muted-foreground mt-5 max-w-2xl text-lg">Manual sports management means phone calls, paper bracket sheets, double-bookings, and lost player data. SportZone replaces all of it with one connected system.</p>
+        
+        <div class="grid md:grid-cols-3 gap-4 mt-10">
+          <div class="p-6 rounded-2xl border border-border bg-card">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-7 h-7 text-destructive" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 6v6l4 2"></path>
+            </svg>
+            <p class="font-display text-4xl font-bold mt-3">45 min</p>
+            <p class="text-sm text-muted-foreground">Avg manual booking time</p>
+          </div>
+          <div class="p-6 rounded-2xl border border-primary bg-card shadow-[var(--shadow-glow)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-7 h-7 text-primary" aria-hidden="true">
+              <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+            </svg>
+            <p class="font-display text-4xl font-bold mt-3">&lt; 1 min</p>
+            <p class="text-sm text-muted-foreground">Booking time on SportZone</p>
+          </div>
+          <div class="p-6 rounded-2xl border border-border bg-card">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-7 h-7 text-success" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+            <p class="font-display text-4xl font-bold mt-3">98%</p>
+            <p class="text-sm text-muted-foreground">Reduction in double bookings</p>
+          </div>
+        </div>
+
+        <div class="mt-12 rounded-2xl border border-border bg-card overflow-hidden">
+          <div class="grid grid-cols-3 px-6 py-4 border-b border-border bg-secondary">
+            <div class="text-xs font-display tracking-widest text-muted-foreground">FEATURE</div>
+            <div class="text-xs font-display tracking-widest text-destructive">MANUAL METHOD</div>
+            <div class="text-xs font-display tracking-widest text-primary">SPORTZONE</div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm">
+            <div class="font-semibold">Booking Time</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> 30–60 min calls
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Under 60 seconds
+            </div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm bg-background/30">
+            <div class="font-semibold">Double Bookings</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> Frequent conflicts
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Zero — real-time sync
+            </div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm">
+            <div class="font-semibold">Tournament Bracket</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> Drawn on paper
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Auto-generated
+            </div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm bg-background/30">
+            <div class="font-semibold">Payments</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> Cash only
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Card, UPI, wallets
+            </div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm">
+            <div class="font-semibold">Player Stats</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> Lost or unrecorded
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Tracked automatically
+            </div>
+          </div>
+          <div class="grid grid-cols-3 px-6 py-4 items-center text-sm bg-background/30">
+            <div class="font-semibold">Notifications</div>
+            <div class="text-muted-foreground flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4 text-destructive shrink-0" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg> Manual SMS/calls
+            </div>
+            <div class="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4 text-primary shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg> Instant push & email
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 p-8 rounded-2xl border border-border bg-card">
+          <h2 class="font-display text-3xl font-bold uppercase">The Bottom Line</h2>
+          <p class="text-muted-foreground mt-3 max-w-3xl">By digitizing slot management, payments, brackets and communication, SportZone reduces operational overhead by an estimated <span class="text-primary font-bold">70%</span> while increasing venue utilization and tournament participation. Less time on logistics. More time on sport.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-border mt-24">
+      <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+        <p>© 2026 SportZone — Booking & Tournament Management</p>
+        <p class="font-display tracking-wider">PLAY · BOOK · COMPETE</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="Tennis court">
+  <rect width="640" height="420" rx="34" fill="#0ea5e9"/>
+  <rect x="96" y="62" width="448" height="296" fill="#2563eb" stroke="#e0f2fe" stroke-width="10"/>
+  <path d="M320 62v296M96 210h448M196 62v296M444 62v296" stroke="#e0f2fe" stroke-width="7" opacity=".85"/>
+  <circle cx="426" cy="244" r="43" fill="#d9f99d" stroke="#365314" stroke-width="6"/>
+  <path d="M212 264c52-82 111-89 151-49 42 42 27 96-13 119-44 26-98 1-138-70z" fill="none" stroke="#f8fafc" stroke-width="18"/>
+  <path d="m202 272-64 72" stroke="#78350f" stroke-width="20" stroke-linecap="round"/>
+</svg>

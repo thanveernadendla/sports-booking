@@ -1,0 +1,14 @@
+{
+  "name": "sportzone-appium-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Appium end-to-end tests for the SportZone Android application",
+  "scripts": {
+    "test": "node tests/android.ci.js",
+    "test:device": "node tests/android.e2e.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "webdriverio": "^8.40.3"
+  }
+}

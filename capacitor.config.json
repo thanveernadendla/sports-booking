@@ -1,0 +1,6 @@
+{
+  "appId": "com.sportzone.app",
+  "appName": "SportZone",
+  "webDir": "public",
+  "bundledWebRuntime": false
+}

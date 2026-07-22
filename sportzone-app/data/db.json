@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "demo@sportzone.com",
+      "password": "password123",
+      "name": "Demo Admin"
+    }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "time": "10:00",
+      "venue": "Arena 7 Football",
+      "team": "Team Eagles",
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 2,
+      "time": "12:00",
+      "venue": "Skyline Basketball",
+      "team": "Marcus J.",
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 3,
+      "time": "14:00",
+      "venue": "Center Court Tennis",
+      "team": "Anna K.",
+      "status": "Pending",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 4,
+      "time": "16:00",
+      "venue": "SmashHouse Badminton",
+      "team": "Dev R.",
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    },
+    {
+      "id": 5,
+      "time": "18:00",
+      "venue": "Pulse Cricket Ground",
+      "team": "Royals XI",
+      "status": "Confirmed",
+      "date": "2026-06-15"
+    }
+  ],
+  "utilization": {
+    "Football Turf": 92,
+    "Basketball": 78,
+    "Tennis": 65,
+    "Badminton": 85,
+    "Cricket": 54
+  }
+}

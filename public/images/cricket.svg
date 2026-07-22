@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="Cricket ground">
+  <rect width="640" height="420" rx="34" fill="#16a34a"/>
+  <ellipse cx="320" cy="210" rx="238" ry="126" fill="#22c55e" stroke="#dcfce7" stroke-width="8"/>
+  <rect x="275" y="116" width="90" height="188" rx="42" fill="#facc15" opacity=".9"/>
+  <path d="M250 308 424 134" stroke="#92400e" stroke-width="24" stroke-linecap="round"/>
+  <path d="M414 116h54v54h-54z" fill="#fef3c7" stroke="#92400e" stroke-width="8"/>
+  <circle cx="214" cy="146" r="34" fill="#ef4444" stroke="#7f1d1d" stroke-width="6"/>
+</svg>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking App - SportZone</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pro.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pro-app">
+  <header class="pro-topbar">
+    <div class="pro-shell pro-nav">
+      <a class="pro-brand" href="index.html"><span class="brand-cube">SZ</span><span>SportZone Booking App</span></a>
+      <nav class="pro-links">
+        <a class="pro-link" href="index.html">Home</a>
+        <a class="pro-link active" href="dashboard.html">Booking App</a>
+        <a class="pro-link" href="admin-login.html">Admin</a>
+        <span id="user-display" class="muted"></span>
+        <a id="auth-btn" class="pro-button" href="auth.html">Mobile login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pro-shell" style="padding:32px 0 60px">
+    <div style="display:flex;justify-content:space-between;gap:18px;align-items:end;flex-wrap:wrap">
+      <div>
+        <p class="pro-kicker">Customer booking application</p>
+        <h1 class="pro-title" style="font-size:clamp(38px,6vw,64px)">Live slot board</h1>
+        <p class="pro-copy">Already booked times disappear from the dropdown, so another player cannot book the same venue and time.</p>
+      </div>
+      <p class="muted">Today: <strong id="today-date"></strong></p>
+    </div>
+
+    <section class="metric-grid">
+      <div class="metric-card"><span>Bookings Today</span><strong id="stat-bookings">...</strong></div>
+      <div class="metric-card"><span>Available Slots</span><strong id="stat-slots">...</strong></div>
+      <div class="metric-card"><span>Players</span><strong id="stat-players">...</strong></div>
+      <div class="metric-card"><span>Revenue</span><strong id="stat-revenue">...</strong></div>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="pro-card pro-card-pad">
+        <div style="display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap">
+          <div>
+            <h2 style="font-family:Oswald;font-size:28px">Book a slot</h2>
+            <p class="muted" id="online-players-count">Loading...</p>
+          </div>
+        </div>
+        <form id="booking-form" data-testid="booking-form" style="margin-top:18px">
+          <div class="form-field">
+            <label for="booking-venue">Venue</label>
+            <select id="booking-venue" data-testid="booking-venue" required></select>
+          </div>
+          <div class="form-field">
+            <label for="booking-time">Available time</label>
+            <select id="booking-time" data-testid="booking-time" required></select>
+          </div>
+          <div class="form-field">
+            <label for="booking-team">Team name / booked by</label>
+            <input id="booking-team" data-testid="booking-team" type="text" placeholder="Royals XI" required />
+          </div>
+          <button class="pro-button" data-testid="booking-submit" type="submit" style="width:100%">Request booking</button>
+        </form>
+        <h3 style="font-family:Oswald;font-size:22px;margin-top:24px">Available slots for selected venue</h3>
+        <div class="slot-board" id="available-slot-board"></div>
+      </div>
+
+      <aside class="pro-card pro-card-pad">
+        <h2 style="font-family:Oswald;font-size:28px">3D utilization</h2>
+        <div class="arena-3d" style="min-height:230px">
+          <div class="arena-stage" style="width:min(300px,100%)">
+            <div class="arena-floor"></div>
+            <div class="arena-panel one"><strong>Live</strong><span>Venue load</span></div>
+            <div class="arena-panel two"><strong>INR</strong><span>Payments</span></div>
+          </div>
+        </div>
+        <div id="utilization-container"></div>
+      </aside>
+    </section>
+
+    <section class="pro-card pro-card-pad" style="margin-top:20px">
+      <h2 style="font-family:Oswald;font-size:28px">Today's confirmed bookings</h2>
+      <div id="bookings-container"></div>
+    </section>
+
+    <section class="pro-card pro-card-pad" style="margin-top:20px">
+      <h2 style="font-family:Oswald;font-size:28px">Request venue for tournament</h2>
+      <p class="muted">Send a tournament venue request to the admin.</p>
+      <form id="tournament-request-form" data-testid="tournament-request-form" class="dashboard-grid" style="margin-top:18px">
+        <div class="form-field">
+          <label for="tournament-name">Tournament name</label>
+          <input id="tournament-name" data-testid="tournament-name" type="text" placeholder="Summer Football League" required />
+        </div>
+        <div class="form-field">
+          <label for="tournament-venue">Venue</label>
+          <select id="tournament-venue" data-testid="tournament-venue" required></select>
+        </div>
+        <div class="form-field">
+          <label for="tournament-date">Requested date</label>
+          <input id="tournament-date" data-testid="tournament-date" type="date" />
+        </div>
+        <div class="form-field">
+          <label for="tournament-notes">Notes</label>
+          <input id="tournament-notes" data-testid="tournament-notes" type="text" placeholder="Teams, timing, special setup" />
+        </div>
+        <button class="pro-button" data-testid="tournament-request-submit" type="submit">Send tournament venue request</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

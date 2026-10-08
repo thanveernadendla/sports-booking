@@ -5,7 +5,8 @@
   "description": "Appium end-to-end tests for the SportZone Android application",
   "scripts": {
     "test": "node tests/android.ci.js",
-    "test:device": "node tests/android.e2e.js"
+    "test:device": "node tests/android.e2e.js",
+    "test:ci": "node tests/android.ci.js"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

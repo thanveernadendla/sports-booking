@@ -41,3 +41,11 @@ yarn-error.log*
 test-cases/**/reports/*.xlsx
 test-cases/**/reports/screenshots/
 test-cases/reports/*.xlsx
+# Track primary categorized test reports
+!test-cases/reports/full_master_e2e_report_1800.xlsx
+!test-cases/reports/full-e2e-report.xlsx
+!test-cases/web-tests/reports/selenium_website_tests_300.xlsx
+!test-cases/web-tests/reports/selenium-web-report.xlsx
+!test-cases/web-tests/reports/sportzone-test-case-catalog.xlsx
+!test-cases/mobile-tests/reports/appium_android_tests_300.xlsx
+!test-cases/mobile-tests/reports/appium-android-report.xlsx

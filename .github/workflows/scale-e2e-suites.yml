@@ -38,16 +38,29 @@ jobs:
         run: |
           nohup npm start > server.log 2>&1 &
           echo $! > server.pid
+          sleep 2
+          # Check if process is still running
+          if ! kill -0 $(cat server.pid) 2>/dev/null; then
+            echo "Server failed to start. Log output:"
+            cat server.log
+            exit 1
+          fi
 
       - name: Wait for server ready
         run: |
+          echo "Waiting for server on port 5000..."
           for i in {1..60}; do
-            if curl -fsS http://localhost:5000/api/config > /dev/null; then
+            echo "Attempt $i/60..."
+            if curl -fsS http://localhost:5000/api/config > /dev/null 2>&1; then
+              echo "Server is ready!"
               exit 0
             fi
             sleep 1
           done
+          echo "Server failed to respond. Server logs:"
           cat server.log
+          echo "Process status:"
+          ps aux | grep -E "node|npm" || echo "No node processes found"
           exit 1
 
       - name: Run Selenium Website Tests (300)

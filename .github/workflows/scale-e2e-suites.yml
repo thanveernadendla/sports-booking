@@ -11,6 +11,11 @@ jobs:
     name: Selenium — Website Tests (300)
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,6 +34,7 @@ jobs:
       - name: Start SportZone server
         env:
           PORT: 5000
+          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://127.0.0.1:27017/sportzone' }}
         run: |
           nohup npm start > server.log 2>&1 &
           echo $! > server.pid

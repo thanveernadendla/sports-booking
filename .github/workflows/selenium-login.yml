@@ -9,6 +9,11 @@ jobs:
     name: Selenium E2E Web + API Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
 
     steps:
       - name: Checkout project
@@ -33,6 +38,7 @@ jobs:
       - name: Start SportZone server
         env:
           PORT: 5000
+          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://127.0.0.1:27017/sportzone' }}
         run: |
           nohup npm start > server.log 2>&1 &
           echo $! > server.pid
@@ -110,6 +116,11 @@ jobs:
     name: Baseline Load Test 100 Users
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
 
     steps:
       - name: Checkout project
@@ -131,6 +142,7 @@ jobs:
       - name: Start SportZone server
         env:
           PORT: 5000
+          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://127.0.0.1:27017/sportzone' }}
         run: |
           nohup npm start > server.log 2>&1 &
           echo $! > server.pid

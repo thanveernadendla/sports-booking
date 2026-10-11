@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "node backend/server.js",
+    "dev": "node backend/server.js --open",
     "android": "react-native run-android --project-root mobile-app",
     "start:mobile": "react-native start",
     "test:all:1800": "node test-cases/run_all_suites_1800.js",

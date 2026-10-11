@@ -67,10 +67,34 @@ io.on('connection', (socket) => {
   });
 });
 
+function openBrowser(url) {
+  if (process.env.CI || process.env.NODE_ENV === 'test') return;
+  const { exec } = require('child_process');
+  const plat = process.platform;
+  const cmd = plat === 'win32'
+    ? `start "" "${url}"`
+    : plat === 'darwin'
+    ? `open "${url}"`
+    : `xdg-open "${url}"`;
+
+  exec(cmd, () => {});
+}
+
 if (require.main === module) {
   connectDB().then(() => {
     server.listen(PORT, () => {
-      console.log(`SportZone Server with Socket.io is running on http://localhost:${PORT}`);
+      const url = `http://localhost:${PORT}`;
+      console.log(`SportZone Server with Socket.io is running on ${url}`);
+
+      const shouldOpen =
+        process.argv.includes('--open') ||
+        process.env.npm_lifecycle_event === 'dev' ||
+        process.env.OPEN_BROWSER === 'true';
+
+      if (shouldOpen && !process.env.CI) {
+        console.log(`[Dev] Opening ${url} in your browser...`);
+        openBrowser(url);
+      }
     });
   }).catch(err => {
     console.error('Failed to start server due to MongoDB connection error:', err);

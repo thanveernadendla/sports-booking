@@ -1,0 +1,17 @@
+{
+  "name": "sportzone-selenium-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Selenium end-to-end tests for the SportZone web application",
+  "scripts": {
+    "test": "node tests/web.e2e.js",
+    "test:bulk": "node tests/web.bulk.js",
+    "test:ci": "node tests/web.e2e.js && node tests/web.bulk.js",
+    "test:headed": "set SHOW_BROWSER=true&& node tests/web.e2e.js",
+    "test:catalog": "node scripts/generate-test-catalog.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.23.0"
+  }
+}

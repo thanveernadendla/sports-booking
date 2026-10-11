@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login - SportZone</title>
+  <link rel="stylesheet" href="/styles/styles.css" />
+  <link rel="stylesheet" href="/styles/pro.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pro-app">
+  <main class="pro-shell pro-grid" style="min-height:100vh">
+    <section>
+      <p class="pro-kicker">Separate admin application</p>
+      <h1 class="pro-title">Admin control room</h1>
+      <p class="pro-copy">Login separately to see the full operational dashboard with bookings, revenue, registered users, and venue slot capacity.</p>
+      <div class="arena-3d" style="min-height:280px">
+        <div class="arena-stage" style="width:min(380px,100%)">
+          <div class="arena-floor"></div>
+          <div class="arena-panel one"><strong>Admin</strong><span>Clear dashboard</span></div>
+          <div class="arena-panel two"><strong>₹</strong><span>Revenue view</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pro-card pro-card-pad">
+      <a class="pro-brand" href="index.html"><span class="brand-cube">SZ</span><span>SportZone Admin</span></a>
+      <form id="admin-login-form" data-testid="admin-login-form" style="margin-top:28px">
+        <div class="form-field">
+          <label for="admin-username">Admin username</label>
+          <input id="admin-username" data-testid="admin-username" type="text" placeholder="admin" required />
+        </div>
+        <div class="form-field">
+          <label for="admin-password">Password</label>
+          <input id="admin-password" data-testid="admin-password" type="password" placeholder="admin123" required />
+        </div>
+        <p id="admin-error" style="color:#dc2626;font-weight:700;margin:8px 0"></p>
+        <button class="pro-button" data-testid="admin-submit" type="submit" style="width:100%">Open admin dashboard</button>
+      </form>
+      <div class="pro-card" style="padding:14px;margin-top:18px;background:#f8fafc">
+        <strong>Default admin</strong>
+        <p class="muted">Username: admin | Password: admin123</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/scripts/admin.js"></script>
+</body>
+</html>

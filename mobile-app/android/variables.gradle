@@ -1,0 +1,13 @@
+ext {
+    minSdkVersion = 24
+    compileSdkVersion = 34
+    targetSdkVersion = 34
+    buildToolsVersion = "34.0.0"
+    ndkVersion = "26.1.10909125"
+    kotlinVersion = "1.9.24"
+    androidxAppCompatVersion = '1.6.1'
+    coreSplashScreenVersion = '1.0.1'
+    junitVersion = '4.13.2'
+    androidxJunitVersion = '1.1.5'
+    androidxEspressoCoreVersion = '3.5.1'
+}

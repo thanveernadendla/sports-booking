@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SportZone 3D Booking</title>
+  <link rel="stylesheet" href="/styles/styles.css" />
+  <link rel="stylesheet" href="/styles/pro.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pro-app">
+  <header class="pro-topbar">
+    <div class="pro-shell pro-nav">
+      <a class="pro-brand" href="index.html"><span class="brand-cube">SZ</span><span>SportZone</span></a>
+      <nav class="pro-links">
+        <a class="pro-link active" href="index.html">Home</a>
+        <a class="pro-link" href="dashboard.html">Bookings</a>
+        <a class="pro-link" href="admin-login.html">Admin</a>
+        <span id="user-display" class="muted"></span>
+        <a id="auth-btn" class="pro-button" href="auth.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pro-shell">
+    <section class="pro-hero">
+      <div>
+        <p class="pro-kicker">Professional 3D sports booking system</p>
+        <h1 class="pro-title">Book courts without double booking</h1>
+        <p class="pro-copy">SportZone now uses mobile-number login, live slot locking, Indian rupee pricing, and a separate admin dashboard for clear venue control.</p>
+        <div class="pro-links" style="margin-top:28px">
+          <a class="pro-button" href="dashboard.html">Open booking app</a>
+          <a class="pro-button-secondary" href="admin-login.html">Admin login</a>
+        </div>
+      </div>
+      <div class="arena-3d">
+        <div class="arena-stage">
+          <div class="arena-floor"></div>
+          <div class="arena-panel one"><strong>₹</strong><span>Indian rupee pricing</span></div>
+          <div class="arena-panel two"><strong>3D</strong><span>Professional control view</span></div>
+          <div class="arena-panel three"><strong>0</strong><span>Duplicate slots allowed</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="metric-grid">
+      <div class="metric-card"><span>Login</span><strong>Mobile</strong></div>
+      <div class="metric-card"><span>Currency</span><strong>INR</strong></div>
+      <div class="metric-card"><span>Admin</span><strong>Separate</strong></div>
+      <div class="metric-card"><span>Slots</span><strong>Live</strong></div>
+    </section>
+  </main>
+
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

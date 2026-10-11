@@ -1,0 +1,170 @@
+{
+  "users": [
+    {
+      "id": 100,
+      "phone": "9000000000",
+      "username": "admin",
+      "password": "admin123",
+      "name": "SportZone Admin",
+      "role": "admin",
+      "status": "Approved"
+    },
+    {
+      "id": 101,
+      "phone": "8008640126",
+      "password": "Shaikasif786@",
+      "name": "Shaikasif",
+      "role": "user",
+      "status": "Rejected"
+    },
+    {
+      "id": 102,
+      "phone": "7673903737",
+      "password": "munna@123",
+      "name": "munna",
+      "role": "user",
+      "status": "Rejected"
+    },
+    {
+      "id": 103,
+      "phone": "8639293303",
+      "password": "8639293303",
+      "name": "munna",
+      "role": "user",
+      "status": "Rejected"
+    },
+    {
+      "id": 104,
+      "phone": "8688863452",
+      "password": "Munna@7673",
+      "name": "bharath",
+      "role": "user",
+      "status": "Approved"
+    },
+    {
+      "id": 105,
+      "phone": "9899899899",
+      "password": "123456",
+      "name": "Nallaballe Srinivas",
+      "role": "user",
+      "status": "Approved"
+    },
+    {
+      "id": 106,
+      "phone": "9883553888",
+      "password": "password123",
+      "name": "Test User",
+      "role": "user",
+      "status": "Approved"
+    },
+    {
+      "id": 107,
+      "phone": "9860660698",
+      "password": "password123",
+      "name": "Test User",
+      "role": "user",
+      "status": "Approved"
+    }
+  ],
+  "venues": [
+    {
+      "id": 1,
+      "name": "Arena 7 Football",
+      "category": "Football Turf",
+      "fee": 1000,
+      "status": "Approved"
+    },
+    {
+      "id": 2,
+      "name": "Skyline Basketball",
+      "category": "Basketball",
+      "fee": 900,
+      "status": "Approved"
+    },
+    {
+      "id": 3,
+      "name": "Center Court Tennis",
+      "category": "Tennis",
+      "fee": 700,
+      "status": "Approved"
+    },
+    {
+      "id": 4,
+      "name": "SmashHouse Badminton",
+      "category": "Badminton",
+      "fee": 500,
+      "status": "Approved"
+    },
+    {
+      "id": 5,
+      "name": "Pulse Cricket Ground",
+      "category": "Cricket",
+      "fee": 1500,
+      "status": "Approved"
+    }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "time": "08:00",
+      "venue": "Arena 7 Football",
+      "team": "Shaik's",
+      "status": "Rejected",
+      "date": "2026-06-18",
+      "userId": 101,
+      "customerName": "Shaikasif",
+      "customerPhone": "8008640126",
+      "fee": 1200
+    },
+    {
+      "id": 2,
+      "time": "10:00",
+      "venue": "Arena 7 Football",
+      "team": "munna",
+      "status": "Rejected",
+      "date": "2026-06-18",
+      "userId": 101,
+      "customerName": "Shaikasif",
+      "customerPhone": "8008640126",
+      "fee": 1000
+    },
+    {
+      "id": 3,
+      "time": "08:00",
+      "venue": "Skyline Basketball",
+      "team": "royals",
+      "status": "Rejected",
+      "date": "2026-08-06",
+      "userId": 103,
+      "customerName": "munna",
+      "customerPhone": "8639293303",
+      "fee": 900
+    },
+    {
+      "id": 4,
+      "time": "08:00",
+      "venue": "Skyline Basketball",
+      "team": "csk",
+      "status": "Approved",
+      "date": "2026-10-08",
+      "userId": 104,
+      "customerName": "bharath",
+      "customerPhone": "8688863452",
+      "fee": 900
+    }
+  ],
+  "tournaments": [],
+  "tournamentVenueRequests": [
+    {
+      "id": 1,
+      "tournamentName": "royals",
+      "venue": "Arena 7 Football",
+      "requestedDate": "2026-06-19",
+      "notes": "",
+      "status": "Approved",
+      "userId": 101,
+      "customerName": "Shaikasif",
+      "customerPhone": "8008640126"
+    }
+  ]
+}

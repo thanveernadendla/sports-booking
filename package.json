@@ -1,28 +1,42 @@
 {
   "name": "sportzone-app",
   "version": "1.0.0",
-  "description": "SportZone Booking & Tournament Management Web and Mobile Application",
-  "main": "server.js",
+  "description": "SportZone Booking & Tournament Management Web and Native React Native Android Application",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "cap:init": "cap init",
-    "cap:sync": "cap sync",
-    "cap:add-android": "cap add android",
-    "cap:add-ios": "cap add ios",
-    "cap:run-android": "cap run android",
-    "cap:run-ios": "cap run ios"
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "android": "react-native run-android --project-root mobile-app",
+    "start:mobile": "react-native start",
+    "test:all:1800": "node test-cases/run_all_suites_1800.js",
+    "test:web:300": "node test-cases/web-tests/tests/run_website_300.js",
+    "test:android:300": "node test-cases/mobile-tests/tests/run_android_300.js",
+    "test:unit:300": "node test-cases/unit-tests/run_unit_300.js",
+    "test:validation:300": "node test-cases/validation-tests/run_validation_300.js",
+    "test:deployment:300": "node test-cases/deployment-tests/run_deployment_300.js",
+    "test:load:300": "node test-cases/load-tests/run_load_300.js"
   },
   "dependencies": {
-    "@capacitor/core": "^6.0.0",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^7.3.0"
+    "mongodb": "^7.3.0",
+    "mongoose": "^8.3.0",
+    "react": "^18.3.1",
+    "react-native": "^0.75.3",
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.0.0",
-    "@capacitor/cli": "^6.0.0",
-    "@capacitor/ios": "^6.0.0"
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/runtime": "^7.25.6",
+    "@react-native-community/cli": "^14.0.0",
+    "@react-native/babel-preset": "^0.75.3",
+    "@react-native/metro-config": "^0.75.3",
+    "@react-native/typescript-config": "^0.75.3"
   }
 }
